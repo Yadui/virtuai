@@ -1,52 +1,140 @@
+"use client";
+
+import Link from "next/link";
+import { Montserrat } from "next/font/google";
+import { ScrollReveal } from "@/hooks/useScrollReveal";
+import { cn } from "@/lib/utils";
+import { 
+  SiX, 
+  SiGithub, 
+  SiDiscord 
+} from "@icons-pack/react-simple-icons";
+import { Linkedin } from "lucide-react";
+
+const font = Montserrat({ weight: "600", subsets: ["latin"] });
+
+const socialLinks = [
+  { name: "Twitter", Icon: SiX, href: "https://twitter.com" },
+  { name: "GitHub", Icon: SiGithub, href: "https://github.com" },
+  { name: "LinkedIn", Icon: Linkedin, href: "https://linkedin.com" },
+  { name: "Discord", Icon: SiDiscord, href: "https://discord.com" },
+];
+
+const footerLinks = [
+  {
+    title: "Product",
+    links: ["Features", "Pricing", "API", "Changelog"],
+  },
+  {
+    title: "Company",
+    links: ["About", "Blog", "Careers", "Press"],
+  },
+  {
+    title: "Resources",
+    links: ["Documentation", "Help Center", "Community", "Status"],
+  },
+  {
+    title: "Legal",
+    links: ["Privacy", "Terms", "Cookies", "Licenses"],
+  },
+];
+
 export const LandingFooter = () => {
   return (
-    <footer className="footer footer-horizontal footer-center bg-base-200 text-white rounded p-10 mt-4 mb-4">
-      <nav className="flex justify-center gap-4">
-        <a className="link link-hover">About us</a>
-        <a className="link link-hover">Contact</a>
-        <a className="link link-hover">Jobs</a>
-        <a className="link link-hover">Press kit</a>
-      </nav>
-      <nav>
-        <div className="flex justify-center gap-4 mt-4 mb-4">
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="fill-current"
+    <footer className="relative bg-black border-t border-white/5">
+      {/* Gradient line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+
+      <div className="max-w-7xl mx-auto px-6 py-20">
+        {/* Main footer content */}
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-12 mb-16">
+          {/* Brand column */}
+          <ScrollReveal animation="fadeUp" className="col-span-2">
+            <Link href="/" className="inline-block mb-6">
+              <h2
+                className={cn(
+                  "text-3xl font-bold gradient-text",
+                  font.className
+                )}
+              >
+                VirtuAI
+              </h2>
+            </Link>
+            <p className="text-white/50 text-sm leading-relaxed mb-6 max-w-xs">
+              Empowering creativity with AI. Generate images, write code, and
+              create content faster than ever.
+            </p>
+            {/* Social links */}
+            <div className="flex gap-3">
+              {socialLinks.map(({ name, Icon, href }) => (
+                <a
+                  key={name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110 group"
+                  aria-label={name}
+                >
+                  <Icon className="w-4 h-4 text-white/50 group-hover:text-white transition-colors" />
+                </a>
+              ))}
+            </div>
+          </ScrollReveal>
+
+          {/* Link columns */}
+          {footerLinks.map((column, i) => (
+            <ScrollReveal
+              key={column.title}
+              animation="fadeUp"
+              delay={(i + 1) * 100}
+              className="col-span-1"
             >
-              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-            </svg>
-          </a>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
-            </svg>
-          </a>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
-            </svg>
-          </a>
+              <h3 className="text-sm font-semibold text-white mb-4">
+                {column.title}
+              </h3>
+              <ul className="space-y-3">
+                {column.links.map((link) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="text-sm text-white/40 hover:text-white transition-colors duration-200"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </ScrollReveal>
+          ))}
         </div>
-      </nav>
-      <aside className="text-center mt-4">
-        <p>{new Date().getFullYear()} - VirtuAI</p>
-      </aside>
+
+        {/* Bottom bar */}
+        <ScrollReveal animation="fadeUp" delay={500}>
+          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-white/30">
+              © {new Date().getFullYear()} VirtuAI. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6 text-sm text-white/30">
+              <a href="#" className="hover:text-white/60 transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="hover:text-white/60 transition-colors">
+                Terms of Service
+              </a>
+              <a href="#" className="hover:text-white/60 transition-colors">
+                Cookies
+              </a>
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+
+      {/* Large background logo */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-[0.02] pointer-events-none select-none overflow-hidden">
+        <span className={cn("text-[20rem] font-bold whitespace-nowrap", font.className)}>
+          VirtuAI
+        </span>
+      </div>
     </footer>
   );
 };

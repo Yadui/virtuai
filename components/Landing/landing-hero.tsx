@@ -1,63 +1,94 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import TypewriterComponent from "typewriter-effect";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-
 import { Button } from "@/components/ui/button";
-import "../../app/globals.css";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 export const LandingHero = () => {
   const { isSignedIn } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <section className="w-full min-h-screen flex justify-center pb-5 pt-5">
-      {/* 👈 Push it down below navbar */}
-      <div className="relative w-full max-w-[1400px] bg-[url('/gradient-hero-prerender.jpeg')] bg-cover bg-center min-h-[500px] rounded-xl flex items-center justify-center text-white shadow-xl">
-        <div className="max-w-6xl w-full px-6 text-center space-y-8">
-          <h1 className="sm:text-7xl md:text-6xl lg:text-9xl font-extrabold">
-            The AI Tool for
-          </h1>
-          <div className="lg:text-5xl sm:text-3xl md:text-4xl font-bold">
-            <TypewriterComponent
-              options={{
-                strings: [
-                  "Chatbot.",
-                  "Photo Generation.",
-                  "Code Writing.",
-                  "Video Generation.",
-                ],
-                autoStart: true,
-                loop: true,
-              }}
-            />
-          </div>
-          <p className="text-lg md:text-xl font-light text-white">
-            Create content faster using AI.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/sign-up">
-              <Button className="text-lg px-6 py-3 rounded-xl bg-black text-white hover:bg-zinc-900 transition">
-                Try it now
-              </Button>
-            </Link>
-          </div>
+    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-black">
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div 
+          className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full animate-float-slow"
+          style={{
+            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%)',
+          }}
+        />
+        <div 
+          className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full animate-float"
+          style={{
+            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%)',
+            animationDelay: '2s',
+          }}
+        />
+      </div>
+
+      {/* Noise overlay */}
+      <div className="absolute inset-0 noise-overlay" />
+
+      {/* Content */}
+      <div className="relative z-10 max-w-5xl w-full px-6 text-center">
+        {/* Main heading */}
+        <h1
+          className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-6 scroll-fade-up ${mounted ? 'is-visible' : ''}`}
+          style={{ transitionDelay: '100ms' }}
+        >
+          Create with the
+          <br />
+          <span className="gradient-text">Power of AI</span>
+        </h1>
+
+        {/* Typewriter */}
+        <div
+          className={`text-xl sm:text-2xl md:text-3xl text-white/50 font-light mb-12 scroll-fade-up ${mounted ? 'is-visible' : ''}`}
+          style={{ transitionDelay: '200ms' }}
+        >
+          <TypewriterComponent
+            options={{
+              strings: [
+                "Generate stunning images",
+                "Write production-ready code",
+                "Create engaging content",
+              ],
+              autoStart: true,
+              loop: true,
+              deleteSpeed: 30,
+              delay: 50,
+            }}
+          />
         </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10">
-          <svg
-            className="w-8 h-8 text-white"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+
+        {/* CTA Button */}
+        <div
+          className={`scroll-fade-up ${mounted ? 'is-visible' : ''}`}
+          style={{ transitionDelay: '300ms' }}
+        >
+          <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
+            <Button
+              size="lg"
+              className="group px-10 py-7 text-lg rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold shadow-2xl shadow-violet-500/30 hover:shadow-violet-500/50 transition-all duration-300 hover:-translate-y-1"
+            >
+              Get Started
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
+      </div>
+
+      {/* Scroll arrow */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+        <ChevronDown className="w-8 h-8 text-white/40" />
       </div>
     </section>
   );
