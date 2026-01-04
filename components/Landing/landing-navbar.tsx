@@ -44,7 +44,7 @@ export const LandingNavbar = () => {
         "flex items-center justify-between",
         "transition-all duration-500 ease-out",
         // Glassmorphism effect
-        "glass",
+        "border border-white/10 backdrop-blur-3xl bg-[#0a0a0f] md:bg-black/50",
         // Visibility state
         isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0",
         // Scrolled state - more compact
