@@ -51,7 +51,7 @@ const TestimonialCard = ({ quote, name, title }: { quote: string; name: string; 
   <div className="flex-shrink-0 w-[400px] p-8 rounded-3xl bg-zinc-900/80 border border-white/5 hover:border-violet-500/20 transition-all duration-300 group">
     <Quote className="w-8 h-8 text-violet-500/30 mb-4" />
     <p className="text-white/80 text-lg leading-relaxed mb-6 group-hover:text-white transition-colors">
-      "{quote}"
+      &quot;{quote}&quot;
     </p>
     <div className="flex items-center gap-3">
       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-white font-bold text-sm">
