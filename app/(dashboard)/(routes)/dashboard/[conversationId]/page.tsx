@@ -3,17 +3,10 @@
 import { useState, useRef, useEffect, use } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Send, Download, ChevronDown, Sparkles } from "lucide-react";
+import { Download } from "lucide-react";
+import { ChatComposer, type ChatModel } from "@/components/Chat/chat-composer";
 import { UserAvatar } from "@/components/GeneralUI/user-avatar";
 import { Loader } from "@/components/GeneralUI/loader";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -21,13 +14,6 @@ interface Message {
   content: string;
   type?: "text" | "image" | "code";
   images?: string[];
-}
-
-interface Model {
-  id: string;
-  name: string;
-  provider: string;
-  isDefault: boolean;
 }
 
 interface ConversationPageProps {
@@ -40,7 +26,7 @@ const ConversationPage = ({ params }: ConversationPageProps) => {
   const [newMessage, setNewMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingConversation, setLoadingConversation] = useState<boolean>(true);
-  const [models, setModels] = useState<Model[]>([]);
+  const [models, setModels] = useState<ChatModel[]>([]);
   const [selectedModelId, setSelectedModelId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +63,7 @@ const ConversationPage = ({ params }: ConversationPageProps) => {
         if (response.ok) {
           const data = await response.json();
           setModels(data);
-          const defaultModel = data.find((m: Model) => m.isDefault);
+          const defaultModel = data.find((m: ChatModel) => m.isDefault);
           if (defaultModel) {
             setSelectedModelId(defaultModel.id);
           }
@@ -140,97 +126,51 @@ const ConversationPage = ({ params }: ConversationPageProps) => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleMessageSend();
-    }
-  };
-
-  const selectedModel = models.find((m) => m.id === selectedModelId);
-
-  const ModelSelector = () => (
-    <div className="flex justify-center py-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
-            <Sparkles className="h-4 w-4" />
-            {selectedModel?.name || "VirtuAI Default"}
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="center">
-          <DropdownMenuItem
-            onClick={() => setSelectedModelId(null)}
-            className={cn(!selectedModelId && "bg-accent")}
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            VirtuAI Default
-          </DropdownMenuItem>
-          {models.map((model) => (
-            <DropdownMenuItem
-              key={model.id}
-              onClick={() => setSelectedModelId(model.id)}
-              className={cn(selectedModelId === model.id && "bg-accent")}
-            >
-              {model.name}
-              <span className="ml-2 text-xs text-muted-foreground">
-                {model.provider}
-              </span>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
-
   if (loadingConversation) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="flex min-h-0 flex-1 items-center justify-center bg-[#f7f7f4]">
         <Loader />
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col relative">
-      {models.length > 0 && <ModelSelector />}
-
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto w-full px-4 py-6 space-y-6">
+    <div className="relative flex min-h-0 flex-1 flex-col bg-[#f7f7f4] text-[#26251e]">
+      {/* Messages */}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-6">
           {messages.map((message, index) => (
             <div
               key={index}
               className={cn(
-                "flex gap-3",
+                "flex items-start gap-3",
                 message.role === "user" ? "flex-row-reverse" : "flex-row"
               )}
             >
               {message.role === "user" && <UserAvatar />}
               <div
                 className={cn(
-                  "rounded-2xl px-4 py-3 max-w-[80%]",
+                  "max-w-[78%] rounded-xl px-4 py-3 text-sm leading-6",
                   message.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted"
+                    ? "bg-[#26251e] text-[#f7f7f4]"
+                    : "border border-[#e6e5e0] bg-white text-[#5a5852] shadow-sm"
                 )}
               >
                 {message.type === "image" && message.images ? (
                   <div className="space-y-3">
-                    <p className="text-sm mb-2">{message.content}</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <p className="mb-2 text-sm">{message.content}</p>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {message.images.map((img, imgIndex) => (
-                        <div key={imgIndex} className="relative group">
+                        <div key={imgIndex} className="group relative">
                           <img
                             src={img}
                             alt={`Generated image ${imgIndex + 1}`}
-                            className="rounded-lg w-full"
+                            className="w-full rounded-lg border border-[#e6e5e0]"
                           />
                           <a
                             href={img}
                             download={`virtuai-image-${Date.now()}-${imgIndex}.jpg`}
-                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 text-white p-2 rounded-lg"
+                            className="absolute right-2 top-2 rounded-md bg-[#26251e] p-2 text-white opacity-0 transition-opacity group-hover:opacity-100"
                           >
                             <Download className="h-4 w-4" />
                           </a>
@@ -246,29 +186,29 @@ const ConversationPage = ({ params }: ConversationPageProps) => {
                       code: ({ children, className }) => {
                         const isInline = !className;
                         return isInline ? (
-                          <code className="bg-black/10 dark:bg-white/10 rounded px-1.5 py-0.5 text-sm">
+                          <code className="rounded bg-[#efeee8] px-1.5 py-0.5 font-mono text-[13px] text-[#26251e]">
                             {children}
                           </code>
                         ) : (
-                          <code className="block bg-black/10 dark:bg-white/10 rounded-lg p-3 text-sm overflow-x-auto my-2">
+                          <code className="my-2 block overflow-x-auto rounded-lg border border-[#e6e5e0] bg-[#fafaf7] p-3 font-mono text-[13px] leading-5 text-[#26251e]">
                             {children}
                           </code>
                         );
                       },
                       table: ({ children }) => (
-                        <div className="overflow-x-auto my-2">
-                          <table className="border-collapse border border-border w-full text-sm">
+                        <div className="my-2 overflow-x-auto">
+                          <table className="w-full border-collapse border border-[#e6e5e0] text-sm">
                             {children}
                           </table>
                         </div>
                       ),
                       th: ({ children }) => (
-                        <th className="border border-border px-3 py-2 bg-muted font-semibold text-left">
+                        <th className="border border-[#e6e5e0] bg-[#fafaf7] px-3 py-2 text-left font-semibold">
                           {children}
                         </th>
                       ),
                       td: ({ children }) => (
-                        <td className="border border-border px-3 py-2">{children}</td>
+                        <td className="border border-[#e6e5e0] px-3 py-2">{children}</td>
                       ),
                     }}
                   >
@@ -280,8 +220,8 @@ const ConversationPage = ({ params }: ConversationPageProps) => {
           ))}
 
           {loading && (
-            <div className="flex gap-3">
-              <div className="bg-muted rounded-2xl px-4 py-3">
+            <div className="flex items-start gap-3">
+              <div className="rounded-xl border border-[#e6e5e0] bg-white px-4 py-3 shadow-sm">
                 <Loader />
               </div>
             </div>
@@ -291,27 +231,18 @@ const ConversationPage = ({ params }: ConversationPageProps) => {
         </div>
       </div>
 
-      {/* Bottom Input */}
-      <div className="border-t bg-background p-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 bg-muted rounded-xl px-4 py-2">
-            <Input
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Message VirtuAI..."
-              disabled={loading}
-              className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
-            <Button
-              onClick={handleMessageSend}
-              disabled={loading || !newMessage.trim()}
-              size="icon"
-              className="rounded-lg"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
+      {/* Composer */}
+      <div className="shrink-0 border-t border-[#e6e5e0] bg-[#fafaf7] p-4">
+        <div className="mx-auto max-w-3xl">
+          <ChatComposer
+            value={newMessage}
+            onChange={setNewMessage}
+            onSubmit={handleMessageSend}
+            disabled={loading}
+            models={models}
+            selectedModelId={selectedModelId}
+            onModelSelect={setSelectedModelId}
+          />
         </div>
       </div>
     </div>

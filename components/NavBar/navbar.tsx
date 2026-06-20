@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
-import { Menu, PenSquare } from "lucide-react";
+import { LogOut, Menu, PenSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Sidebar } from "@/components/SideBar/sidebar";
@@ -23,17 +22,24 @@ const Navbar = ({ apiLimitCount = 0, isPro = false }: NavbarProps) => {
     router.refresh();
   };
 
+  const handleSignOut = async () => {
+    await fetch("/api/local-auth/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  };
+
   return (
-    <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#0a0a0f] text-white">
-      {/* Left side - New Chat & Sidebar Toggle */}
+    <div className="flex h-11 items-center justify-between border-b border-[#e6e5e0] bg-[#fafaf7] px-4 text-[#26251e]">
+      {/* Left side — mobile: hamburger + new chat; desktop: new chat only */}
       <div className="flex items-center gap-2">
+        {/* Mobile-only sidebar toggle */}
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="text-[#5a5852] hover:text-[#26251e] lg:hidden">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-72">
+          <SheetContent side="left" className="w-[220px] border-r border-[#e6e5e0] p-0">
             <Sidebar
               apiLimitCount={apiLimitCount}
               isPro={isPro}
@@ -43,19 +49,22 @@ const Navbar = ({ apiLimitCount = 0, isPro = false }: NavbarProps) => {
         </Sheet>
 
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={handleNewChat}
-          className="gap-2"
+          className="gap-2 text-[#5a5852] hover:text-[#26251e]"
         >
           <PenSquare className="h-4 w-4" />
           <span className="hidden sm:inline">New Chat</span>
         </Button>
       </div>
 
-      {/* Right side - User Button */}
+      {/* Right side */}
       <div className="flex items-center">
-        <UserButton afterSignOutUrl="/" />
+        <Button variant="ghost" size="sm" onClick={handleSignOut} className="gap-2 text-[#5a5852] hover:text-[#26251e]">
+          <LogOut className="h-4 w-4" />
+          <span className="hidden sm:inline">Sign Out</span>
+        </Button>
       </div>
     </div>
   );
