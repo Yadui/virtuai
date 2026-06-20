@@ -7001,28 +7001,28 @@ export namespace Prisma {
   export type UserSubscriptionMinAggregateOutputType = {
     id: string | null
     userId: string | null
-    stripeCustomerId: string | null
-    stripeSubscriptionId: string | null
-    stripePriceId: string | null
-    stripeCurrentPeriodEnd: Date | null
+    plan: string | null
+    razorpayOrderId: string | null
+    razorpayPaymentId: string | null
+    activatedAt: Date | null
   }
 
   export type UserSubscriptionMaxAggregateOutputType = {
     id: string | null
     userId: string | null
-    stripeCustomerId: string | null
-    stripeSubscriptionId: string | null
-    stripePriceId: string | null
-    stripeCurrentPeriodEnd: Date | null
+    plan: string | null
+    razorpayOrderId: string | null
+    razorpayPaymentId: string | null
+    activatedAt: Date | null
   }
 
   export type UserSubscriptionCountAggregateOutputType = {
     id: number
     userId: number
-    stripeCustomerId: number
-    stripeSubscriptionId: number
-    stripePriceId: number
-    stripeCurrentPeriodEnd: number
+    plan: number
+    razorpayOrderId: number
+    razorpayPaymentId: number
+    activatedAt: number
     _all: number
   }
 
@@ -7030,28 +7030,28 @@ export namespace Prisma {
   export type UserSubscriptionMinAggregateInputType = {
     id?: true
     userId?: true
-    stripeCustomerId?: true
-    stripeSubscriptionId?: true
-    stripePriceId?: true
-    stripeCurrentPeriodEnd?: true
+    plan?: true
+    razorpayOrderId?: true
+    razorpayPaymentId?: true
+    activatedAt?: true
   }
 
   export type UserSubscriptionMaxAggregateInputType = {
     id?: true
     userId?: true
-    stripeCustomerId?: true
-    stripeSubscriptionId?: true
-    stripePriceId?: true
-    stripeCurrentPeriodEnd?: true
+    plan?: true
+    razorpayOrderId?: true
+    razorpayPaymentId?: true
+    activatedAt?: true
   }
 
   export type UserSubscriptionCountAggregateInputType = {
     id?: true
     userId?: true
-    stripeCustomerId?: true
-    stripeSubscriptionId?: true
-    stripePriceId?: true
-    stripeCurrentPeriodEnd?: true
+    plan?: true
+    razorpayOrderId?: true
+    razorpayPaymentId?: true
+    activatedAt?: true
     _all?: true
   }
 
@@ -7130,10 +7130,10 @@ export namespace Prisma {
   export type UserSubscriptionGroupByOutputType = {
     id: string
     userId: string
-    stripeCustomerId: string | null
-    stripeSubscriptionId: string | null
-    stripePriceId: string | null
-    stripeCurrentPeriodEnd: Date | null
+    plan: string
+    razorpayOrderId: string | null
+    razorpayPaymentId: string | null
+    activatedAt: Date | null
     _count: UserSubscriptionCountAggregateOutputType | null
     _min: UserSubscriptionMinAggregateOutputType | null
     _max: UserSubscriptionMaxAggregateOutputType | null
@@ -7156,40 +7156,40 @@ export namespace Prisma {
   export type UserSubscriptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    stripeCustomerId?: boolean
-    stripeSubscriptionId?: boolean
-    stripePriceId?: boolean
-    stripeCurrentPeriodEnd?: boolean
+    plan?: boolean
+    razorpayOrderId?: boolean
+    razorpayPaymentId?: boolean
+    activatedAt?: boolean
   }, ExtArgs["result"]["userSubscription"]>
 
   export type UserSubscriptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    stripeCustomerId?: boolean
-    stripeSubscriptionId?: boolean
-    stripePriceId?: boolean
-    stripeCurrentPeriodEnd?: boolean
+    plan?: boolean
+    razorpayOrderId?: boolean
+    razorpayPaymentId?: boolean
+    activatedAt?: boolean
   }, ExtArgs["result"]["userSubscription"]>
 
   export type UserSubscriptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    stripeCustomerId?: boolean
-    stripeSubscriptionId?: boolean
-    stripePriceId?: boolean
-    stripeCurrentPeriodEnd?: boolean
+    plan?: boolean
+    razorpayOrderId?: boolean
+    razorpayPaymentId?: boolean
+    activatedAt?: boolean
   }, ExtArgs["result"]["userSubscription"]>
 
   export type UserSubscriptionSelectScalar = {
     id?: boolean
     userId?: boolean
-    stripeCustomerId?: boolean
-    stripeSubscriptionId?: boolean
-    stripePriceId?: boolean
-    stripeCurrentPeriodEnd?: boolean
+    plan?: boolean
+    razorpayOrderId?: boolean
+    razorpayPaymentId?: boolean
+    activatedAt?: boolean
   }
 
-  export type UserSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "stripeCustomerId" | "stripeSubscriptionId" | "stripePriceId" | "stripeCurrentPeriodEnd", ExtArgs["result"]["userSubscription"]>
+  export type UserSubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "plan" | "razorpayOrderId" | "razorpayPaymentId" | "activatedAt", ExtArgs["result"]["userSubscription"]>
 
   export type $UserSubscriptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "UserSubscription"
@@ -7197,10 +7197,10 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      stripeCustomerId: string | null
-      stripeSubscriptionId: string | null
-      stripePriceId: string | null
-      stripeCurrentPeriodEnd: Date | null
+      plan: string
+      razorpayOrderId: string | null
+      razorpayPaymentId: string | null
+      activatedAt: Date | null
     }, ExtArgs["result"]["userSubscription"]>
     composites: {}
   }
@@ -7626,10 +7626,10 @@ export namespace Prisma {
   interface UserSubscriptionFieldRefs {
     readonly id: FieldRef<"UserSubscription", 'String'>
     readonly userId: FieldRef<"UserSubscription", 'String'>
-    readonly stripeCustomerId: FieldRef<"UserSubscription", 'String'>
-    readonly stripeSubscriptionId: FieldRef<"UserSubscription", 'String'>
-    readonly stripePriceId: FieldRef<"UserSubscription", 'String'>
-    readonly stripeCurrentPeriodEnd: FieldRef<"UserSubscription", 'DateTime'>
+    readonly plan: FieldRef<"UserSubscription", 'String'>
+    readonly razorpayOrderId: FieldRef<"UserSubscription", 'String'>
+    readonly razorpayPaymentId: FieldRef<"UserSubscription", 'String'>
+    readonly activatedAt: FieldRef<"UserSubscription", 'DateTime'>
   }
     
 
@@ -11282,10 +11282,10 @@ export namespace Prisma {
   export const UserSubscriptionScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    stripeCustomerId: 'stripeCustomerId',
-    stripeSubscriptionId: 'stripeSubscriptionId',
-    stripePriceId: 'stripePriceId',
-    stripeCurrentPeriodEnd: 'stripeCurrentPeriodEnd'
+    plan: 'plan',
+    razorpayOrderId: 'razorpayOrderId',
+    razorpayPaymentId: 'razorpayPaymentId',
+    activatedAt: 'activatedAt'
   };
 
   export type UserSubscriptionScalarFieldEnum = (typeof UserSubscriptionScalarFieldEnum)[keyof typeof UserSubscriptionScalarFieldEnum]
@@ -11730,40 +11730,40 @@ export namespace Prisma {
     NOT?: UserSubscriptionWhereInput | UserSubscriptionWhereInput[]
     id?: StringFilter<"UserSubscription"> | string
     userId?: StringFilter<"UserSubscription"> | string
-    stripeCustomerId?: StringNullableFilter<"UserSubscription"> | string | null
-    stripeSubscriptionId?: StringNullableFilter<"UserSubscription"> | string | null
-    stripePriceId?: StringNullableFilter<"UserSubscription"> | string | null
-    stripeCurrentPeriodEnd?: DateTimeNullableFilter<"UserSubscription"> | Date | string | null
+    plan?: StringFilter<"UserSubscription"> | string
+    razorpayOrderId?: StringNullableFilter<"UserSubscription"> | string | null
+    razorpayPaymentId?: StringNullableFilter<"UserSubscription"> | string | null
+    activatedAt?: DateTimeNullableFilter<"UserSubscription"> | Date | string | null
   }
 
   export type UserSubscriptionOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    stripeCustomerId?: SortOrderInput | SortOrder
-    stripeSubscriptionId?: SortOrderInput | SortOrder
-    stripePriceId?: SortOrderInput | SortOrder
-    stripeCurrentPeriodEnd?: SortOrderInput | SortOrder
+    plan?: SortOrder
+    razorpayOrderId?: SortOrderInput | SortOrder
+    razorpayPaymentId?: SortOrderInput | SortOrder
+    activatedAt?: SortOrderInput | SortOrder
   }
 
   export type UserSubscriptionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     userId?: string
-    stripeCustomerId?: string
-    stripeSubscriptionId?: string
+    razorpayOrderId?: string
+    razorpayPaymentId?: string
     AND?: UserSubscriptionWhereInput | UserSubscriptionWhereInput[]
     OR?: UserSubscriptionWhereInput[]
     NOT?: UserSubscriptionWhereInput | UserSubscriptionWhereInput[]
-    stripePriceId?: StringNullableFilter<"UserSubscription"> | string | null
-    stripeCurrentPeriodEnd?: DateTimeNullableFilter<"UserSubscription"> | Date | string | null
-  }, "id" | "userId" | "stripeCustomerId" | "stripeSubscriptionId">
+    plan?: StringFilter<"UserSubscription"> | string
+    activatedAt?: DateTimeNullableFilter<"UserSubscription"> | Date | string | null
+  }, "id" | "userId" | "razorpayOrderId" | "razorpayPaymentId">
 
   export type UserSubscriptionOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    stripeCustomerId?: SortOrderInput | SortOrder
-    stripeSubscriptionId?: SortOrderInput | SortOrder
-    stripePriceId?: SortOrderInput | SortOrder
-    stripeCurrentPeriodEnd?: SortOrderInput | SortOrder
+    plan?: SortOrder
+    razorpayOrderId?: SortOrderInput | SortOrder
+    razorpayPaymentId?: SortOrderInput | SortOrder
+    activatedAt?: SortOrderInput | SortOrder
     _count?: UserSubscriptionCountOrderByAggregateInput
     _max?: UserSubscriptionMaxOrderByAggregateInput
     _min?: UserSubscriptionMinOrderByAggregateInput
@@ -11775,10 +11775,10 @@ export namespace Prisma {
     NOT?: UserSubscriptionScalarWhereWithAggregatesInput | UserSubscriptionScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"UserSubscription"> | string
     userId?: StringWithAggregatesFilter<"UserSubscription"> | string
-    stripeCustomerId?: StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
-    stripeSubscriptionId?: StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
-    stripePriceId?: StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
-    stripeCurrentPeriodEnd?: DateTimeNullableWithAggregatesFilter<"UserSubscription"> | Date | string | null
+    plan?: StringWithAggregatesFilter<"UserSubscription"> | string
+    razorpayOrderId?: StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
+    razorpayPaymentId?: StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
+    activatedAt?: DateTimeNullableWithAggregatesFilter<"UserSubscription"> | Date | string | null
   }
 
   export type UserModelWhereInput = {
@@ -12292,64 +12292,64 @@ export namespace Prisma {
   export type UserSubscriptionCreateInput = {
     id?: string
     userId: string
-    stripeCustomerId?: string | null
-    stripeSubscriptionId?: string | null
-    stripePriceId?: string | null
-    stripeCurrentPeriodEnd?: Date | string | null
+    plan?: string
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    activatedAt?: Date | string | null
   }
 
   export type UserSubscriptionUncheckedCreateInput = {
     id?: string
     userId: string
-    stripeCustomerId?: string | null
-    stripeSubscriptionId?: string | null
-    stripePriceId?: string | null
-    stripeCurrentPeriodEnd?: Date | string | null
+    plan?: string
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    activatedAt?: Date | string | null
   }
 
   export type UserSubscriptionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plan?: StringFieldUpdateOperationsInput | string
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserSubscriptionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plan?: StringFieldUpdateOperationsInput | string
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserSubscriptionCreateManyInput = {
     id?: string
     userId: string
-    stripeCustomerId?: string | null
-    stripeSubscriptionId?: string | null
-    stripePriceId?: string | null
-    stripeCurrentPeriodEnd?: Date | string | null
+    plan?: string
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    activatedAt?: Date | string | null
   }
 
   export type UserSubscriptionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plan?: StringFieldUpdateOperationsInput | string
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserSubscriptionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeSubscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripePriceId?: NullableStringFieldUpdateOperationsInput | string | null
-    stripeCurrentPeriodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plan?: StringFieldUpdateOperationsInput | string
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserModelCreateInput = {
@@ -12935,28 +12935,28 @@ export namespace Prisma {
   export type UserSubscriptionCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    stripeCustomerId?: SortOrder
-    stripeSubscriptionId?: SortOrder
-    stripePriceId?: SortOrder
-    stripeCurrentPeriodEnd?: SortOrder
+    plan?: SortOrder
+    razorpayOrderId?: SortOrder
+    razorpayPaymentId?: SortOrder
+    activatedAt?: SortOrder
   }
 
   export type UserSubscriptionMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    stripeCustomerId?: SortOrder
-    stripeSubscriptionId?: SortOrder
-    stripePriceId?: SortOrder
-    stripeCurrentPeriodEnd?: SortOrder
+    plan?: SortOrder
+    razorpayOrderId?: SortOrder
+    razorpayPaymentId?: SortOrder
+    activatedAt?: SortOrder
   }
 
   export type UserSubscriptionMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    stripeCustomerId?: SortOrder
-    stripeSubscriptionId?: SortOrder
-    stripePriceId?: SortOrder
-    stripeCurrentPeriodEnd?: SortOrder
+    plan?: SortOrder
+    razorpayOrderId?: SortOrder
+    razorpayPaymentId?: SortOrder
+    activatedAt?: SortOrder
   }
 
   export type BoolFilter<$PrismaModel = never> = {

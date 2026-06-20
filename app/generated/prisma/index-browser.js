@@ -167,10 +167,10 @@ exports.Prisma.UserApiLimitScalarFieldEnum = {
 exports.Prisma.UserSubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  stripeCustomerId: 'stripeCustomerId',
-  stripeSubscriptionId: 'stripeSubscriptionId',
-  stripePriceId: 'stripePriceId',
-  stripeCurrentPeriodEnd: 'stripeCurrentPeriodEnd'
+  plan: 'plan',
+  razorpayOrderId: 'razorpayOrderId',
+  razorpayPaymentId: 'razorpayPaymentId',
+  activatedAt: 'activatedAt'
 };
 
 exports.Prisma.UserModelScalarFieldEnum = {

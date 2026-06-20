@@ -1,40 +1,18 @@
 import prismadb from "@/lib/prismadb";
 import { getCurrentUserId } from "@/lib/auth";
 
-const DAY_IN_MS = 86_400_000;
-
-export const checkSubscription = async () => {
+export const checkSubscription = async (): Promise<boolean> => {
   const userId = await getCurrentUserId();
-
-  if (!userId) {
-    return false;
-  }
+  if (!userId) return false;
 
   try {
-    const userSubscription = await prismadb.userSubscription.findUnique({
-      where: {
-        userId: userId,
-      },
-      select: {
-        stripeSubscriptionId: true,
-        stripeCurrentPeriodEnd: true,
-        stripeCustomerId: true,
-        stripePriceId: true,
-      },
+    const sub = await prismadb.userSubscription.findUnique({
+      where: { userId },
+      select: { plan: true, razorpayPaymentId: true },
     });
 
-    if (!userSubscription) {
-      return false;
-    }
-
-    const isValid =
-      userSubscription.stripePriceId &&
-      userSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS >
-        Date.now();
-
-    return !!isValid;
+    return sub?.plan === "Pro" && Boolean(sub.razorpayPaymentId);
   } catch {
-    console.warn("[SUBSCRIPTION_CHECK_FALLBACK] Subscription data unavailable; defaulting to free plan.");
     return false;
   }
 };
