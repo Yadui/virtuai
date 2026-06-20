@@ -1,8 +1,18 @@
 import Stripe from "stripe";
 
-type DateString = "2022-11-15" | "2024-12-18";
+let stripeClient: Stripe | null = null;
 
-export const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
-  apiVersion: "2024-12-18.acacia", // Correctly specify the apiVersion as a property
-  typescript: true,
-});
+export const getStripe = () => {
+  if (!process.env.STRIPE_API_KEY) {
+    throw new Error("STRIPE_API_KEY is required for Stripe subscription actions");
+  }
+
+  if (!stripeClient) {
+    stripeClient = new Stripe(process.env.STRIPE_API_KEY, {
+      apiVersion: "2024-12-18.acacia",
+      typescript: true,
+    });
+  }
+
+  return stripeClient;
+};

@@ -1,65 +1,54 @@
 "use client";
 
 import { useState } from "react";
-import { ScrollReveal } from "@/hooks/useScrollReveal";
 import { Quote } from "lucide-react";
+
+import { ScrollReveal } from "@/hooks/useScrollReveal";
 
 const testimonials = [
   {
-    quote: "This tool saved me countless hours every week. The AI understands exactly what I need.",
+    quote: "The workspace feels focused enough for daily production, but flexible enough for every kind of AI task we run.",
     name: "Alex M.",
     title: "Product Manager, PixelTech",
   },
   {
-    quote: "I never imagined AI integration could be this seamless. A true game-changer for our team.",
+    quote: "We can move from idea to assets without losing the prompt trail. That alone changed how our team ships campaigns.",
     name: "R. Malhotra",
     title: "Developer Advocate, CodeHive",
   },
   {
-    quote: "Truly revolutionary for our content pipeline. Cut our production time in half.",
+    quote: "The model controls are simple, and the generated outputs stay organized by conversation instead of disappearing into tabs.",
     name: "S. Tanveer",
     title: "Head of Content, WriteWise",
   },
   {
-    quote: "The UI is clean and the performance is unmatched. Best AI tool I've used.",
+    quote: "It has the calm of a writing tool and the utility of a developer console. Our designers and engineers both use it.",
     name: "D. Kim",
     title: "Frontend Engineer, ByteFlow",
   },
   {
-    quote: "Reliable, fast, and simple — what more could you ask for? Highly recommend.",
+    quote: "The best part is the lack of clutter. It makes AI generation feel like a repeatable workflow, not a novelty demo.",
     name: "J. Singh",
     title: "CTO, NovaApps",
   },
   {
-    quote: "Helped my team go from idea to prototype in hours, not weeks. Incredible.",
+    quote: "Custom model setup gave us the control we needed, while the rest of the interface stayed approachable.",
     name: "L. Zhao",
     title: "Innovation Lead, SparkSoft",
-  },
-  {
-    quote: "Our documentation is 3x faster to produce now. Essential for any dev team.",
-    name: "N. Bose",
-    title: "Technical Writer, StackPoint",
-  },
-  {
-    quote: "Finally, an AI tool that designers and devs both love equally.",
-    name: "A. Nguyen",
-    title: "UI Engineer, ColorPixel",
   },
 ];
 
 const TestimonialCard = ({ quote, name, title }: { quote: string; name: string; title: string }) => (
-  <div className="flex-shrink-0 w-[400px] p-8 rounded-3xl bg-zinc-900/80 border border-white/5 hover:border-violet-500/20 transition-all duration-300 group">
-    <Quote className="w-8 h-8 text-violet-500/30 mb-4" />
-    <p className="text-white/80 text-lg leading-relaxed mb-6 group-hover:text-white transition-colors">
-      &quot;{quote}&quot;
-    </p>
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-white font-bold text-sm">
+  <div className="w-[320px] flex-shrink-0 rounded-xl border border-[#e6e5e0] bg-white p-6 sm:w-[380px]">
+    <Quote className="mb-5 h-6 w-6 text-[#a09c92]" />
+    <p className="text-base leading-7 text-[#5a5852]">&quot;{quote}&quot;</p>
+    <div className="mt-6 flex items-center gap-3">
+      <div className="grid h-10 w-10 place-items-center rounded-full bg-[#e6e5e0] text-sm font-semibold text-[#26251e]">
         {name.charAt(0)}
       </div>
       <div>
-        <p className="text-white font-medium text-sm">{name}</p>
-        <p className="text-white/40 text-xs">{title}</p>
+        <p className="text-sm font-semibold text-[#26251e]">{name}</p>
+        <p className="text-xs text-[#807d72]">{title}</p>
       </div>
     </div>
   </div>
@@ -67,117 +56,49 @@ const TestimonialCard = ({ quote, name, title }: { quote: string; name: string; 
 
 export const TestimonialsSection = () => {
   const [isPaused, setIsPaused] = useState(false);
-  
-  // Split testimonials into 2 rows
-  const row1 = testimonials.slice(0, 4);
-  const row2 = testimonials.slice(4, 8);
+  const row1 = testimonials.slice(0, 3);
+  const row2 = testimonials.slice(3, 6);
 
   return (
-    <section className="relative py-32 bg-black overflow-hidden">
-      {/* Background gradient mesh */}
-      <div className="absolute inset-0">
-        <div 
-          className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 60%)',
-          }}
-        />
-      </div>
-
-      {/* Noise overlay */}
-      <div className="absolute inset-0 noise-overlay" />
-
-      <div className="relative z-10">
-        {/* Section header */}
-        <ScrollReveal animation="fadeUp" className="text-center mb-16 px-6">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-            Loved by creators
-            <span className="gradient-text"> worldwide</span>
+    <section id="customers" className="overflow-hidden bg-[#f7f7f4] px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1200px]">
+        <ScrollReveal animation="fadeUp" className="mx-auto mb-12 max-w-2xl text-center">
+          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#807d72]">
+            Customers
+          </p>
+          <h2 className="text-3xl font-normal leading-tight tracking-normal text-[#26251e] sm:text-4xl">
+            Built for teams that use AI all day.
           </h2>
-          <p className="text-lg text-white/50 max-w-xl mx-auto">
-            Join thousands of satisfied users who trust VirtuAI
+          <p className="mt-5 text-base leading-7 text-[#5a5852]">
+            Quiet surfaces, persistent context, and enough structure to keep creative operations moving.
           </p>
         </ScrollReveal>
+      </div>
 
-        {/* Testimonial rows */}
-        <div
-          className="space-y-6"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Row 1 - moves left */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+      <div
+        className="space-y-4"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {[row1, row2].map((row, rowIndex) => (
+          <div key={rowIndex} className="relative">
+            <div className="pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-20 bg-gradient-to-r from-[#f7f7f4] to-transparent" />
+            <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-20 bg-gradient-to-l from-[#f7f7f4] to-transparent" />
             <div className="overflow-hidden">
               <div
-                className="flex gap-6 w-max animate-marquee"
+                className={`flex w-max gap-4 ${rowIndex === 0 ? "animate-marquee" : "animate-marquee-reverse"}`}
                 style={{
-                  animationPlayState: isPaused ? 'paused' : 'running',
-                  ['--marquee-duration' as string]: '40s',
+                  animationPlayState: isPaused ? "paused" : "running",
+                  ["--marquee-duration" as string]: rowIndex === 0 ? "42s" : "48s",
                 }}
               >
-                {[...row1, ...row1, ...row1].map((item, i) => (
-                  <TestimonialCard key={`row1-${i}`} {...item} />
+                {[...row, ...row, ...row, ...row].map((item, index) => (
+                  <TestimonialCard key={`${rowIndex}-${index}`} {...item} />
                 ))}
               </div>
             </div>
           </div>
-
-          {/* Row 2 - moves right */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
-            <div className="overflow-hidden">
-              <div
-                className="flex gap-6 w-max animate-marquee-reverse"
-                style={{
-                  animationPlayState: isPaused ? 'paused' : 'running',
-                  ['--marquee-duration' as string]: '45s',
-                }}
-              >
-                {[...row2, ...row2, ...row2].map((item, i) => (
-                  <TestimonialCard key={`row2-${i}`} {...item} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Trust indicators */}
-        <ScrollReveal animation="fadeUp" delay={200} className="mt-16 text-center px-6">
-          <div className="flex flex-wrap justify-center items-center gap-8 text-white/30">
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {['A', 'B', 'C', 'D'].map((letter, i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 border-2 border-black flex items-center justify-center text-[10px] text-white font-bold"
-                  >
-                    {letter}
-                  </div>
-                ))}
-              </div>
-              <span className="text-sm">10,000+ happy users</span>
-            </div>
-            <div className="h-4 w-px bg-white/20 hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <svg
-                    key={i}
-                    className="w-4 h-4 text-yellow-500"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-sm">4.9/5 average rating</span>
-            </div>
-          </div>
-        </ScrollReveal>
+        ))}
       </div>
     </section>
   );

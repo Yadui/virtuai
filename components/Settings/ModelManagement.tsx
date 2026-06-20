@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Settings, Loader2, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Settings, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,7 +20,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 
 interface Model {
   id: string;
@@ -41,10 +40,53 @@ interface ModelFormProps {
 const PROVIDERS = [
   { value: "azure", label: "Azure OpenAI" },
   { value: "openai", label: "OpenAI" },
+  { value: "github-copilot", label: "GitHub Copilot" },
   { value: "openrouter", label: "OpenRouter" },
   { value: "anthropic", label: "Anthropic" },
   { value: "custom", label: "Custom API" },
 ];
+
+const MODEL_NAME_PROVIDERS = [
+  "azure",
+  "openai",
+  "github-copilot",
+  "openrouter",
+  "anthropic",
+];
+
+const getApiKeyPlaceholder = (provider: string) => {
+  switch (provider) {
+    case "github-copilot":
+      return "github_pat_...";
+    case "anthropic":
+      return "sk-ant-...";
+    case "openrouter":
+      return "sk-or-...";
+    default:
+      return "sk-...";
+  }
+};
+
+const getApiKeyLabel = (provider: string) => {
+  if (provider === "github-copilot") return "GitHub Token";
+
+  return "API Key";
+};
+
+const getModelNamePlaceholder = (provider: string) => {
+  switch (provider) {
+    case "azure":
+      return "gpt-4o";
+    case "github-copilot":
+      return "openai/gpt-4.1";
+    case "openrouter":
+      return "openai/gpt-4o or anthropic/claude-3-opus";
+    case "anthropic":
+      return "claude-3-5-sonnet-20241022";
+    default:
+      return "gpt-4o-mini";
+  }
+};
 
 function ModelForm({ model, onSave, onCancel }: ModelFormProps) {
   const [loading, setLoading] = useState(false);
@@ -61,6 +103,9 @@ function ModelForm({ model, onSave, onCancel }: ModelFormProps) {
       switch (provider) {
         case "openai":
           setApiUrl("https://api.openai.com/v1/chat/completions");
+          break;
+        case "github-copilot":
+          setApiUrl("https://models.github.ai/inference/chat/completions");
           break;
         case "openrouter":
           setApiUrl("https://openrouter.ai/api/v1/chat/completions");
@@ -93,7 +138,7 @@ function ModelForm({ model, onSave, onCancel }: ModelFormProps) {
           provider,
           apiUrl,
           apiKey,
-          deploymentName: provider === "azure" ? deploymentName : null,
+          deploymentName: MODEL_NAME_PROVIDERS.includes(provider) ? deploymentName : null,
           isDefault,
         }),
       });
@@ -147,29 +192,33 @@ function ModelForm({ model, onSave, onCancel }: ModelFormProps) {
           id="apiUrl"
           value={apiUrl}
           onChange={(e) => setApiUrl(e.target.value)}
-          placeholder={provider === "azure" ? "https://your-resource.openai.azure.com/..." : "API endpoint URL"}
+          placeholder={
+            provider === "azure" ? "https://your-resource.openai.azure.com/..." :
+            provider === "github-copilot" ? "https://models.github.ai/inference/chat/completions" :
+            "API endpoint URL"
+          }
           required
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="apiKey">
-          API Key <span className="text-red-500">*</span>
+          {getApiKeyLabel(provider)} <span className="text-red-500">*</span>
         </Label>
         <Input
           id="apiKey"
           type="password"
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
-          placeholder={model ? "Leave empty to keep existing" : "sk-..."}
+          placeholder={model ? "Leave empty to keep existing" : getApiKeyPlaceholder(provider)}
           required={!model}
         />
         <p className="text-xs text-muted-foreground">
-          Your API key is encrypted and stored securely
+          Your credential is stored with the model configuration.
         </p>
       </div>
 
-      {(provider === "azure" || provider === "openrouter" || provider === "openai" || provider === "anthropic") && (
+      {MODEL_NAME_PROVIDERS.includes(provider) && (
         <div className="space-y-2">
           <Label htmlFor="deploymentName">
             {provider === "azure" ? "Deployment Name" : "Model Name"}
@@ -179,13 +228,14 @@ function ModelForm({ model, onSave, onCancel }: ModelFormProps) {
             id="deploymentName"
             value={deploymentName}
             onChange={(e) => setDeploymentName(e.target.value)}
-            placeholder={
-              provider === "azure" ? "gpt-4o" :
-              provider === "openrouter" ? "openai/gpt-4o or anthropic/claude-3-opus" :
-              "gpt-4o-mini"
-            }
+            placeholder={getModelNamePlaceholder(provider)}
             required={provider === "azure"}
           />
+          {provider === "github-copilot" && (
+            <p className="text-xs text-muted-foreground">
+              Use a GitHub Models id available to your token, for example openai/gpt-4.1.
+            </p>
+          )}
           {provider === "openrouter" && (
             <p className="text-xs text-muted-foreground">
               Use format: provider/model (e.g., openai/gpt-4o, anthropic/claude-3-opus)
@@ -293,9 +343,9 @@ export function ModelManagement() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium text-white">Custom Models</h3>
-          <p className="text-sm text-white/70">
-            Add your own AI models to use in chat
+          <h3 className="text-lg font-semibold text-[#26251e]">Models</h3>
+          <p className="text-sm text-[#5a5852]">
+            Chat uses the free model automatically until you attach a custom model
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -323,34 +373,53 @@ export function ModelManagement() {
         </Dialog>
       </div>
 
+      <div className="rounded-xl border border-[#e6e5e0] bg-white p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[#e6e5e0] bg-[#fafaf7] text-[#f54e00]">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-medium text-[#26251e]">VirtuAI Free Model</span>
+              <span className="rounded-full bg-[#e6e5e0] px-2 py-0.5 text-xs text-[#26251e]">
+                Active fallback
+              </span>
+            </div>
+            <p className="mt-1 text-sm leading-6 text-[#5a5852]">
+              Powered by Pollinations. No API key is required, and it is used whenever no custom model is selected.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       ) : models.length === 0 ? (
-        <div className="text-center py-8 text-white/50">
-          <Settings className="h-12 w-12 mx-auto mb-2 opacity-50" />
-          <p>No custom models configured</p>
-          <p className="text-sm">Add a model to get started</p>
+        <div className="rounded-xl border border-[#e6e5e0] bg-white py-10 text-center text-[#807d72]">
+          <Settings className="mx-auto mb-2 h-10 w-10 opacity-60" />
+          <p className="text-[#26251e]">No custom models attached</p>
+          <p className="text-sm">VirtuAI will keep using the free model for chat responses.</p>
         </div>
       ) : (
         <div className="space-y-2">
           {models.map((model) => (
             <div
               key={model.id}
-              className="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-white/5"
+              className="flex items-center justify-between rounded-xl border border-[#e6e5e0] bg-white p-4"
             >
               <div className="flex items-center gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-white">{model.name}</span>
+                    <span className="font-medium text-[#26251e]">{model.name}</span>
                     {model.isDefault && (
-                      <span className="text-xs bg-primary/20 text-primary-foreground px-2 py-0.5 rounded">
+                      <span className="rounded-full bg-[#e6e5e0] px-2 py-0.5 text-xs text-[#26251e]">
                         Default
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-white/60">
+                  <div className="text-sm text-[#807d72]">
                     {PROVIDERS.find((p) => p.value === model.provider)?.label || model.provider}
                     {model.deploymentName && ` • ${model.deploymentName}`}
                   </div>
@@ -361,7 +430,7 @@ export function ModelManagement() {
                   variant="ghost"
                   size="icon"
                   onClick={() => handleEdit(model)}
-                  className="text-white/70 hover:text-white hover:bg-white/10"
+                  className="text-[#807d72] hover:text-[#26251e]"
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -369,7 +438,7 @@ export function ModelManagement() {
                   variant="ghost"
                   size="icon"
                   onClick={() => handleDelete(model.id)}
-                  className="text-red-400 hover:text-red-300 hover:bg-white/10"
+                  className="text-[#cf2d56] hover:text-[#a61f43]"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

@@ -1,7 +1,7 @@
 // app/api/conversations/[id]/route.ts
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prismadb";
+import { getCurrentUserId } from "@/lib/auth";
 
 // GET - Get conversation with all messages
 export async function GET(
@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
+    const userId = await getCurrentUserId();
     const { id } = await params;
 
     if (!userId) {
@@ -45,7 +45,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
+    const userId = await getCurrentUserId();
     const { id } = await params;
 
     if (!userId) {

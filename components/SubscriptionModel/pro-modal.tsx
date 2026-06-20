@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import { useProModal } from "@/hooks/use-pro-modal";
 import { tools } from "@/constants";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 
 
 
@@ -57,10 +56,10 @@ export const ProModal = () => {
                 <DialogHeader>
 
                     <DialogTitle className="flex justify-center items-center flex-col gap-y-4 pb-2">
-                        <div className="flex items-center gap-x-2 font-bold text-xl">
-                            Upgrade to Prodigy
+                        <div className="flex items-center gap-x-2 text-xl font-semibold text-[#26251e]">
+                            Upgrade to VirtuAI
                             <Badge 
-                                variant="premium" 
+                                variant="default" 
                                 className="uppercase text-sm py-1"
                             >
                                 pro
@@ -68,12 +67,12 @@ export const ProModal = () => {
                         </div>
                     </DialogTitle>
 
-                    <DialogDescription className="text-center pt-2 space-y-2 text-zinc-900 font-medium">
+                    <DialogDescription className="space-y-2 pt-2 text-center font-medium text-[#26251e]">
                         {tools.map((tool) => (
-                            <Card key={tool.href} className="p-3 border-black/5 flex items-center justify-between">
+                            <Card key={tool.href} className="flex items-center justify-between border-[#e6e5e0] bg-white p-3">
                                 <div className="flex items-center gap-x-4">
-                                    <div className={cn("p-2 w-fit rounded-md", tool.bgColor)}>
-                                        <tool.icon className={cn("w-6 h-6", tool.color)} />
+                                    <div className="w-fit rounded-md border border-[#e6e5e0] bg-[#fafaf7] p-2 text-[#26251e]">
+                                        <tool.icon className="h-5 w-5" />
                                     </div>
                                     <div className="font-semibold text-sm">
                                         {tool.label}
@@ -92,7 +91,7 @@ export const ProModal = () => {
                         disabled={loading} 
                         onClick={onSubscribe} 
                         size="lg" 
-                        variant="premium" 
+                        variant="default" 
                         className="w-full"
                     >
                         Upgrade

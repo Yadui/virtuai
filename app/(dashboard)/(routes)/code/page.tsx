@@ -54,17 +54,17 @@ const ConvoPage = () => {
   };
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto bg-[#f7f7f4] text-[#26251e]">
       <Heading
         title="Conversation"
         description="Chat with the bot using natural language."
         icon={MessageSquare}
-        iconColor="text-green-700"
-        bgColor="bg-green-700/10"
+        iconColor="text-[#26251e]"
+        bgColor="bg-white"
       />
 
-      <div className="px-4 lg:px-8">
-        <div className="rounded-lg border w-full p-4 mb-4">
+      <div className="px-4 py-6 lg:px-8">
+        <div className="mb-4 w-full rounded-xl border border-[#e6e5e0] bg-white p-4">
           <div className="flex items-center gap-2">
             <Input
               value={newMessage}
@@ -76,7 +76,7 @@ const ConvoPage = () => {
             <Button
               onClick={handleMessageSend}
               disabled={loading}
-              variant="premium"
+              variant="default"
             >
               Send
             </Button>
@@ -85,7 +85,7 @@ const ConvoPage = () => {
 
         <div className="space-y-4 mt-4">
           {loading && (
-            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
+            <div className="flex w-full items-center justify-center rounded-xl border border-[#e6e5e0] bg-white p-8">
               <Loader />
             </div>
           )}
@@ -99,10 +99,10 @@ const ConvoPage = () => {
               <div
                 key={index}
                 className={cn(
-                  "p-4 rounded-lg",
+                  "rounded-xl border p-4 text-sm leading-6",
                   message.role === "user"
-                    ? "bg-blue-100 text-black"
-                    : "bg-gray-100 text-black"
+                    ? "border-[#26251e] bg-[#26251e] text-[#f7f7f4]"
+                    : "border-[#e6e5e0] bg-white text-[#5a5852]"
                 )}
               >
                 {message.role === "bot" && <BotAvatar />}
@@ -111,32 +111,32 @@ const ConvoPage = () => {
                   components={{
                     table: ({ node, ...props }) => (
                       <div className="overflow-x-auto my-4">
-                        <table className="table-auto border-collapse border border-gray-300 w-full text-sm text-left">
+                        <table className="w-full table-auto border-collapse border border-[#e6e5e0] text-left text-sm">
                           {props.children}
                         </table>
                       </div>
                     ),
                     thead: ({ node, ...props }) => (
-                      <thead className="bg-gray-200">{props.children}</thead>
+                      <thead className="bg-[#fafaf7]">{props.children}</thead>
                     ),
                     tr: ({ node, ...props }) => (
-                      <tr className="border-b border-gray-300">
+                      <tr className="border-b border-[#e6e5e0]">
                         {props.children}
                       </tr>
                     ),
                     th: ({ node, ...props }) => (
-                      <th className="px-4 py-2 font-bold border border-gray-300">
+                      <th className="border border-[#e6e5e0] px-4 py-2 font-semibold">
                         {props.children}
                       </th>
                     ),
                     td: ({ node, ...props }) => (
-                      <td className="px-4 py-2 border border-gray-300">
+                      <td className="border border-[#e6e5e0] px-4 py-2">
                         {props.children}
                       </td>
                     ),
                     code: ({ node, ...props }) => (
                       <code
-                        className="bg-gray-200 rounded-md px-2 py-1 text-sm text-black "
+                        className="rounded-md bg-[#efeee8] px-2 py-1 font-mono text-sm text-[#26251e]"
                         {...props}
                       />
                     ),

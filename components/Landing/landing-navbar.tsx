@@ -1,115 +1,99 @@
 "use client";
 
-import { Montserrat } from "next/font/google";
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const font = Montserrat({ weight: "600", subsets: ["latin"] });
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const navItems = ["Features", "Timeline", "Customers", "Pricing"];
 
 export const LandingNavbar = () => {
-  const { isSignedIn } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Determine if we've scrolled past initial position
-      setIsScrolled(currentScrollY > 50);
-      
-      // Hide/show navbar based on scroll direction
-      if (currentScrollY > lastScrollY && currentScrollY > 200) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      
-      setLastScrollY(currentScrollY);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 12);
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   return (
-    <nav
+    <header
       className={cn(
-        "fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[1200px]",
-        "px-6 py-4 rounded-2xl",
-        "flex items-center justify-between",
-        "transition-all duration-500 ease-out",
-        // Glassmorphism effect
-        "border border-white/10 backdrop-blur-3xl bg-[#0a0a0f] md:bg-black/50",
-        // Visibility state
-        isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0",
-        // Scrolled state - more compact
-        isScrolled ? "py-3 shadow-2xl" : "py-4"
+        "fixed inset-x-0 top-0 z-50 border-b border-[#e6e5e0] bg-[#f7f7f4] transition-colors",
+        isScrolled && "bg-[#f7f7f4]/95"
       )}
     >
-      {/* Logo */}
-      <Link href="/" className="flex items-center group">
-        <div className="relative">
-          <h1
-            className={cn(
-              "text-2xl font-bold text-white",
-              "transition-all duration-300",
-              "group-hover:gradient-text-animated",
-              font.className
-            )}
-          >
+      <nav className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex items-center gap-3" aria-label="VirtuAI home">
+          <span className="grid h-8 w-8 place-items-center rounded-md bg-[#f54e00] text-sm font-semibold text-white">
+            V
+          </span>
+          <span className="text-xl font-semibold tracking-normal text-[#f54e00]">
             VirtuAI
-          </h1>
-          {/* Glow effect on hover */}
-          <div className="absolute inset-0 blur-xl bg-violet-500/0 group-hover:bg-violet-500/30 transition-all duration-500 -z-10" />
+          </span>
+        </Link>
+
+        <div className="hidden items-center gap-7 md:flex">
+          {navItems.map((item) => (
+            <Link
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              className="text-sm font-medium text-[#5a5852] transition-colors hover:text-[#26251e]"
+            >
+              {item}
+            </Link>
+          ))}
         </div>
-      </Link>
 
-      {/* Navigation Links - Desktop */}
-      <div className="hidden md:flex items-center gap-8">
-        {["Features", "Pricing", "About"].map((item) => (
-          <Link
-            key={item}
-            href={`#${item.toLowerCase()}`}
-            className="text-sm text-white/70 hover:text-white transition-colors duration-300 relative group"
-          >
-            {item}
-            <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-violet-500 to-indigo-500 group-hover:w-full transition-all duration-300" />
-          </Link>
-        ))}
-      </div>
+        <div className="hidden items-center gap-2 sm:flex">
+          <Button asChild variant="ghost">
+            <Link href="/sign-in">Sign In</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/dashboard">Open App</Link>
+          </Button>
+        </div>
 
-      {/* Buttons */}
-      <div className="flex items-center gap-3">
-        <Link href="/sign-in" className="hidden sm:block">
-          <Button
-            variant="ghost"
-            className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl px-5"
-          >
-            Sign In
-          </Button>
-        </Link>
-        <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
-          <Button
-            className={cn(
-              "rounded-xl px-6 py-2.5",
-              "bg-gradient-to-r from-violet-600 to-indigo-600",
-              "hover:from-violet-500 hover:to-indigo-500",
-              "text-white font-medium",
-              "shadow-lg shadow-violet-500/25",
-              "hover:shadow-xl hover:shadow-violet-500/40",
-              "hover:-translate-y-0.5",
-              "transition-all duration-300"
-            )}
-          >
-            Get Started
-          </Button>
-        </Link>
-      </div>
-    </nav>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={() => setMobileOpen((open) => !open)}
+          aria-label="Toggle navigation"
+        >
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </Button>
+      </nav>
+
+      {mobileOpen && (
+        <div className="border-t border-[#e6e5e0] bg-[#f7f7f4] px-4 py-4 md:hidden">
+          <div className="mx-auto flex max-w-[1200px] flex-col gap-3">
+            {navItems.map((item) => (
+              <Link
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onClick={() => setMobileOpen(false)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-[#5a5852] hover:bg-[#efeee8] hover:text-[#26251e]"
+              >
+                {item}
+              </Link>
+            ))}
+            <div className="grid grid-cols-2 gap-2 pt-2">
+              <Button asChild variant="secondary">
+                <Link href="/sign-in">Sign In</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/dashboard">Open App</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
   );
 };

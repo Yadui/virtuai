@@ -1,12 +1,12 @@
 // app/api/convo/route.ts
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/subscription";
+import { getCurrentUserId } from "@/lib/auth";
 
 export async function POST(request: Request) {
   const { prompt } = await request.json();
-  const { userId } = await auth();
+  const userId = await getCurrentUserId();
 
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });

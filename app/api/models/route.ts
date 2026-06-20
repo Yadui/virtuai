@@ -1,13 +1,13 @@
 // app/api/models/route.ts
 // API for listing and creating user models
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prismadb";
+import { getCurrentUserId } from "@/lib/auth";
 
 // GET - List all models for the current user
 export async function GET() {
   try {
-    const { userId } = await auth();
+    const userId = await getCurrentUserId();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -29,16 +29,16 @@ export async function GET() {
     });
 
     return NextResponse.json(models);
-  } catch (error) {
-    console.error("[MODELS_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+  } catch {
+    console.warn("[MODELS_GET_FALLBACK] Custom models unavailable; returning free model only.");
+    return NextResponse.json([]);
   }
 }
 
 // POST - Create a new model
 export async function POST(request: Request) {
   try {
-    const { userId } = await auth();
+    const userId = await getCurrentUserId();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });

@@ -37,13 +37,13 @@ const MobileSidebar = ({
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden"
+          className="text-[#5a5852] hover:text-[#26251e] md:hidden"
           onClick={() => setIsOpen(true)}
         >
           <Menu />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0">
+      <SheetContent side="left" className="border-r border-[#e6e5e0] p-0">
         <Sidebar
           apiLimitCount={apiLimitCount}
           isPro={isPro}

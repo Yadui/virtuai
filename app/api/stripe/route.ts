@@ -1,28 +1,22 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import prismadb from "@/lib/prismadb";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";
+import { getCurrentUser } from "@/lib/auth";
 
 const settingsUrl = absoluteUrl("/settings");
 
 export async function GET() {
   try {
-    // Get the user ID from Clerk authentication
-    const { userId } = await auth();
+    const user = await getCurrentUser();
 
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    // Await the asynchronous `currentUser` function
-    const user = await currentUser();
-
-    // Handle cases where the user is not available
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
+
+    const userId = user.id;
+    const stripe = getStripe();
 
     const userSubscription = await prismadb.userSubscription.findUnique({
       where: {
@@ -41,24 +35,20 @@ export async function GET() {
     }
 
     // Handle the Stripe Checkout session creation
-    if (
-      user.emailAddresses &&
-      user.emailAddresses[0] &&
-      user.emailAddresses[0].emailAddress
-    ) {
+    if (user.email) {
       const stripeSession = await stripe.checkout.sessions.create({
         success_url: settingsUrl,
         cancel_url: settingsUrl,
         payment_method_types: ["card"],
         mode: "subscription",
         billing_address_collection: "auto",
-        customer_email: user.emailAddresses[0].emailAddress,
+        customer_email: user.email,
         line_items: [
           {
             price_data: {
               currency: "INR",
               product_data: {
-                name: "Prodigy Pro",
+                name: "VirtuAI Pro",
                 description: "Unlimited AI Generations",
               },
               unit_amount: 150000,

@@ -1,12 +1,12 @@
 // app/api/conversations/route.ts
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prismadb";
+import { getCurrentUserId } from "@/lib/auth";
 
 // GET - List user's conversations (only those with at least 2 messages)
 export async function GET() {
   try {
-    const { userId } = await auth();
+    const userId = await getCurrentUserId();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -40,7 +40,7 @@ export async function GET() {
 // POST - Create a new conversation
 export async function POST(request: Request) {
   try {
-    const { userId } = await auth();
+    const userId = await getCurrentUserId();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });

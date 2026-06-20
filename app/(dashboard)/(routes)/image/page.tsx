@@ -86,20 +86,20 @@ const ImagePage = () => {
   };
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto bg-[#f7f7f4] text-[#26251e]">
       <Heading
         title="Image Generation"
         description="Turn your prompts into Image."
         icon={ImageIcon}
-        iconColor="text-pink-700"
-        bgColor="bg-pink-700/10"
+        iconColor="text-[#26251e]"
+        bgColor="bg-white"
       />
-      <div className="px-4 lg:px-8">
+      <div className="px-4 py-6 lg:px-8">
         <div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2"
+              className="grid w-full grid-cols-12 gap-3 rounded-xl border border-[#e6e5e0] bg-white p-4 px-3 md:px-6"
             >
               <FormField
                 name="prompt"
@@ -107,7 +107,7 @@ const ImagePage = () => {
                   <FormItem className="col-span-12 lg:col-span-6">
                     <FormControl className="m-0 p-0">
                       <Input
-                        className="border-2 p-2 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+                        className="border-[#e6e5e0] outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
                         placeholder="Enter request here..."
                         {...field}
@@ -175,7 +175,7 @@ const ImagePage = () => {
                 type="submit"
                 disabled={isLoading}
                 size="icon"
-                variant="premium"
+                variant="default"
               >
                 Generate
               </Button>
@@ -184,7 +184,7 @@ const ImagePage = () => {
         </div>
         <div className="space-y-4 mt-4">
           {isLoading && (
-            <div className="p-20">
+            <div className="rounded-xl border border-[#e6e5e0] bg-white p-20">
               <Loader />
             </div>
           )}
@@ -193,12 +193,12 @@ const ImagePage = () => {
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
             {images.map((image, index) => (
-              <Card key={index} className="rounded-lg overflow-hidden">
+              <Card key={index} className="overflow-hidden rounded-xl border-[#e6e5e0] bg-white">
                 <div className="relative aspect-square">
                   <img
                     src={image}
                     alt={`Generated image ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 </div>
                 <CardFooter className="p-2">

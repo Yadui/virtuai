@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, Menu, PenSquare } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Sidebar } from "@/components/SideBar/sidebar";
@@ -23,9 +24,7 @@ const Navbar = ({ apiLimitCount = 0, isPro = false }: NavbarProps) => {
   };
 
   const handleSignOut = async () => {
-    await fetch("/api/local-auth/logout", { method: "POST" });
-    router.push("/");
-    router.refresh();
+    await signOut({ callbackUrl: "/" });
   };
 
   return (

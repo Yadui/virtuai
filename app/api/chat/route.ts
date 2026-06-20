@@ -1,10 +1,10 @@
 // app/api/chat/route.ts
 // Unified chat API that handles text, image, and code generation
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/subscription";
 import prisma from "@/lib/prismadb";
+import { getCurrentUserId } from "@/lib/auth";
 
 type RequestType = "text" | "image" | "code";
 
@@ -156,6 +156,20 @@ async function handleCustomModelRequest(prompt: string, model: ModelConfig) {
       }
       break;
 
+    case "github-copilot":
+      // GitHub Models/Copilot format (OpenAI-compatible inference endpoint)
+      headers["Authorization"] = `Bearer ${model.apiKey}`;
+      body = {
+        model: model.deploymentName || "openai/gpt-4.1",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 4096,
+      };
+      if (!apiUrl.includes("/chat/completions")) {
+        const baseUrl = model.apiUrl.replace(/\/$/, "");
+        apiUrl = `${baseUrl}/chat/completions`;
+      }
+      break;
+
     case "anthropic":
       // Anthropic format
       headers["x-api-key"] = model.apiKey;
@@ -235,7 +249,7 @@ export async function POST(request: Request) {
     const body: ChatRequest = await request.json();
     const { prompt, type: requestedType, modelId, conversationId, resolution, amount } = body;
     
-    const { userId } = await auth();
+    const userId = await getCurrentUserId();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -252,19 +266,23 @@ export async function POST(request: Request) {
       return new NextResponse("Free Trial has expired", { status: 403 });
     }
 
-    // Check if using a custom model
+    // Check if using a custom model. If model lookup is unavailable, continue with the free model.
     let customModel: ModelConfig | null = null;
     if (modelId) {
-      const model = await prisma.userModel.findFirst({
-        where: { id: modelId, userId },
-      });
-      if (model) {
-        customModel = {
-          provider: model.provider,
-          apiUrl: model.apiUrl,
-          apiKey: model.apiKey,
-          deploymentName: model.deploymentName,
-        };
+      try {
+        const model = await prisma.userModel.findFirst({
+          where: { id: modelId, userId },
+        });
+        if (model) {
+          customModel = {
+            provider: model.provider,
+            apiUrl: model.apiUrl,
+            apiKey: model.apiKey,
+            deploymentName: model.deploymentName,
+          };
+        }
+      } catch {
+        console.warn("[CHAT_MODEL_LOOKUP_FALLBACK] Custom models unavailable; using Pollinations free model.");
       }
     }
 
@@ -295,70 +313,68 @@ export async function POST(request: Request) {
       await incrementApiLimit();
     }
 
-    // Save messages to conversation
-    let activeConversationId = conversationId;
-    
-    // Create new conversation if none provided
-    if (!activeConversationId) {
-      // Generate AI title for the conversation
-      let title = prompt.substring(0, 50) + (prompt.length > 50 ? "..." : "");
-      
-      try {
-        // Use a quick AI call to generate a descriptive title
-        const titleResponse = await fetch("https://text.pollinations.ai/" + encodeURIComponent(
-          `Generate a very short title (2-5 words max) that describes this message. Just respond with the title, no quotes, no explanation: "${prompt}"`
-        ));
-        if (titleResponse.ok) {
-          const generatedTitle = await titleResponse.text();
-          // Clean and validate the title
-          const cleanTitle = generatedTitle.trim().replace(/['"]/g, '').substring(0, 50);
-          if (cleanTitle && cleanTitle.length > 0 && cleanTitle.length <= 50) {
-            title = cleanTitle;
+    try {
+      // Save messages to conversation when the database is available.
+      let activeConversationId = conversationId;
+
+      if (!activeConversationId) {
+        let title = prompt.substring(0, 50) + (prompt.length > 50 ? "..." : "");
+
+        try {
+          const titleResponse = await fetch("https://text.pollinations.ai/" + encodeURIComponent(
+            `Generate a very short title (2-5 words max) that describes this message. Just respond with the title, no quotes, no explanation: "${prompt}"`
+          ));
+          if (titleResponse.ok) {
+            const generatedTitle = await titleResponse.text();
+            const cleanTitle = generatedTitle.trim().replace(/['"]/g, '').substring(0, 50);
+            if (cleanTitle && cleanTitle.length > 0 && cleanTitle.length <= 50) {
+              title = cleanTitle;
+            }
           }
+        } catch {
+          // Keep the default truncated prompt title.
         }
-      } catch (titleError) {
-        console.log("[TITLE_GENERATION] Fallback to prompt:", titleError);
-        // Keep the default truncated prompt title
+
+        const newConversation = await prisma.conversation.create({
+          data: {
+            userId,
+            title,
+          },
+        });
+        activeConversationId = newConversation.id;
       }
-      
-      const newConversation = await prisma.conversation.create({
+
+      await prisma.message.create({
         data: {
-          userId,
-          title,
+          conversationId: activeConversationId,
+          role: "user",
+          content: prompt,
+          type: requestedType || "text",
         },
       });
-      activeConversationId = newConversation.id;
+
+      const messageType = result.type || "text";
+      await prisma.message.create({
+        data: {
+          conversationId: activeConversationId,
+          role: "bot",
+          content: result.type === "image" ? "Here are your generated images:" : (result.reply || ""),
+          type: messageType,
+          images: result.type === "image" && result.images ? result.images : [],
+        },
+      });
+
+      await prisma.conversation.update({
+        where: { id: activeConversationId },
+        data: { updatedAt: new Date() },
+      });
+
+      return NextResponse.json({ ...result, conversationId: activeConversationId });
+    } catch {
+      console.warn("[CHAT_PERSISTENCE_FALLBACK] Conversation storage unavailable; returning free model response without saving.");
     }
 
-    // Save user message
-    await prisma.message.create({
-      data: {
-        conversationId: activeConversationId,
-        role: "user",
-        content: prompt,
-        type: requestedType || "text",
-      },
-    });
-
-    // Save bot response
-    const messageType = result.type || "text";
-    await prisma.message.create({
-      data: {
-        conversationId: activeConversationId,
-        role: "bot",
-        content: result.type === "image" ? "Here are your generated images:" : (result.reply || ""),
-        type: messageType,
-        images: result.type === "image" && result.images ? result.images : [],
-      },
-    });
-
-    // Update conversation timestamp
-    await prisma.conversation.update({
-      where: { id: activeConversationId },
-      data: { updatedAt: new Date() },
-    });
-
-    return NextResponse.json({ ...result, conversationId: activeConversationId });
+    return NextResponse.json({ ...result, model: customModel ? "custom" : "pollinations-free" });
   } catch (error) {
     console.error("[CHAT_ERROR]", error);
     return NextResponse.json(

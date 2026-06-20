@@ -1,11 +1,6 @@
-# Prodigy AI : An AI Platform
+# VirtuAI: An AI Platform
 
-![image](https://github.com/DevDK12/ProdigyAI/assets/42926122/02d71ce1-c2af-4970-a0d3-a56fada3ebaa)
-
-![image](https://github.com/DevDK12/ProdigyAI/assets/42926122/e1041f0b-b32a-4617-b7af-854950173d0f)
-
-
-This is a repository for AI Prodigy AI Platform with Next.js 13, React, Tailwind, Prisma, Stripe.
+VirtuAI is an AI workspace built with Next.js, React, Tailwind, Prisma, and Stripe.
 
 
 Features:

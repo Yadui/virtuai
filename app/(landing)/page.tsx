@@ -7,22 +7,14 @@ import { LandingFooter } from "@/components/Landing/landing-footer";
 
 const LandingPage = () => {
   return (
-    <div className="relative overflow-hidden bg-black">
-      {/* Global noise texture overlay */}
-      <div className="fixed inset-0 noise-overlay pointer-events-none z-50" />
-      
-      {/* Navigation */}
+    <div className="relative overflow-hidden bg-[#f7f7f4] text-[#26251e]">
       <LandingNavbar />
-      
-      {/* Main content */}
       <main>
         <LandingHero />
         <LandingContent />
         <ShowcaseSection />
         <TestimonialsSection />
       </main>
-      
-      {/* Footer */}
       <LandingFooter />
     </div>
   );

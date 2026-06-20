@@ -1,23 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { Montserrat } from "next/font/google";
-import {
-  MessageSquare,
-  Settings,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { MessageSquare, Plus, Settings, Trash2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
+
 import { FreeCounter } from "@/components/SubscriptionModel/free-counter";
 import { cn } from "@/lib/utils";
-
-const poppins = Montserrat({
-  weight: "600",
-  subsets: ["latin"],
-});
 
 interface Conversation {
   id: string;
@@ -42,7 +32,6 @@ export const Sidebar = ({
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Get current conversation ID from URL
   const currentConversationId = pathname.startsWith("/dashboard/")
     ? pathname.split("/dashboard/")[1]
     : null;
@@ -79,7 +68,7 @@ export const Sidebar = ({
         method: "DELETE",
       });
       if (response.ok) {
-        setConversations((prev) => prev.filter((c) => c.id !== id));
+        setConversations((prev) => prev.filter((conversation) => conversation.id !== id));
         if (currentConversationId === id) {
           router.push("/dashboard");
         }
@@ -90,32 +79,32 @@ export const Sidebar = ({
   };
 
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full bg-zinc-900 text-white">
-      <div className="px-3 py-2 flex-1 flex flex-col overflow-hidden">
-        <Link href="/dashboard" className="flex items-center pl-3 mb-6">
-          <div className="relative h-8 w-8 mr-4">
-            <Image fill alt="Logo" src="/logo.png" />
-          </div>
-          <h1 className={cn("text-2xl font-bold", poppins.className)}>
-            VirtuAI
-          </h1>
+    <div className="flex h-full flex-col bg-[#fafaf7] text-[#26251e]">
+      <div className="flex min-h-0 flex-1 flex-col px-3 py-4">
+        <Link href="/dashboard" className="mb-5 flex items-center gap-3 px-2" onClick={onLinkClick}>
+          <span className="grid h-8 w-8 place-items-center rounded-md bg-[#f54e00] text-sm font-semibold text-white">
+            V
+          </span>
+          <span className="text-xl font-semibold text-[#f54e00]">VirtuAI</span>
         </Link>
 
-        {/* New Chat Button */}
         <button
           onClick={handleNewChat}
-          className="flex items-center gap-2 w-full px-3 py-2 mb-4 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg hover:from-purple-700 hover:to-pink-700 transition"
+          className="mb-5 flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[#f54e00] px-3 text-sm font-medium text-white transition-colors hover:bg-[#d04200]"
         >
           <Plus className="h-4 w-4" />
           New Chat
         </button>
 
-        {/* Chat History */}
-        <div className="flex-1 overflow-y-auto space-y-1 mb-4">
+        <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#807d72]">
+          Conversations
+        </div>
+
+        <div className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
           {loading ? (
-            <div className="text-xs text-zinc-500 px-3 py-2">Loading...</div>
+            <div className="px-2 py-2 text-xs text-[#807d72]">Loading...</div>
           ) : conversations.length === 0 ? (
-            <div className="text-xs text-zinc-500 px-3 py-2">No conversations yet</div>
+            <div className="px-2 py-2 text-xs text-[#807d72]">No conversations yet</div>
           ) : (
             conversations.map((conversation) => (
               <Link
@@ -123,19 +112,20 @@ export const Sidebar = ({
                 href={`/dashboard/${conversation.id}`}
                 onClick={onLinkClick}
                 className={cn(
-                  "group flex items-center justify-between text-sm p-3 w-full rounded-lg transition",
+                  "group flex items-center justify-between rounded-md border px-3 py-2 text-sm transition-colors",
                   currentConversationId === conversation.id
-                    ? "text-white bg-white/10"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
+                    ? "border-[#cfcdc4] bg-white text-[#26251e]"
+                    : "border-transparent text-[#5a5852] hover:border-[#e6e5e0] hover:bg-white hover:text-[#26251e]"
                 )}
               >
-                <div className="flex items-center flex-1 min-w-0">
-                  <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
+                <div className="flex min-w-0 flex-1 items-center">
+                  <MessageSquare className="mr-2 h-4 w-4 flex-shrink-0" />
                   <span className="truncate">{conversation.title}</span>
                 </div>
                 <button
-                  onClick={(e) => handleDeleteConversation(e, conversation.id)}
-                  className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 transition"
+                  onClick={(event) => handleDeleteConversation(event, conversation.id)}
+                  className="rounded-md p-1 text-[#a09c92] opacity-0 transition group-hover:opacity-100 hover:bg-[#efeee8] hover:text-[#cf2d56]"
+                  aria-label="Delete conversation"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -144,22 +134,21 @@ export const Sidebar = ({
           )}
         </div>
 
-        {/* Settings Link */}
-        <Link
-          href="/settings"
-          onClick={onLinkClick}
-          className={cn(
-            "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition",
-            pathname === "/settings"
-              ? "text-white "
-              : "text-white/70"
-          )}
-        >
-          <div className="flex items-center flex-1">
-            <Settings className="h-5 w-5 mr-3" />
+        <div className="mt-4 border-t border-[#e6e5e0] pt-3">
+          <Link
+            href="/settings"
+            onClick={onLinkClick}
+            className={cn(
+              "flex w-full items-center rounded-md border px-3 py-2 text-sm font-medium transition-colors",
+              pathname === "/settings"
+                ? "border-[#cfcdc4] bg-white text-[#26251e]"
+                : "border-transparent text-[#5a5852] hover:border-[#e6e5e0] hover:bg-white hover:text-[#26251e]"
+            )}
+          >
+            <Settings className="mr-3 h-4 w-4" />
             Settings
-          </div>
-        </Link>
+          </Link>
+        </div>
       </div>
 
       <FreeCounter isPro={isPro} apiLimitCount={apiLimitCount} />
